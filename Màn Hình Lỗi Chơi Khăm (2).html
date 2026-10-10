@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Xác minh bảo mật</title>
+    <!-- Sử dụng font Roboto chuẩn của Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
+    
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #ffffff;
+            font-family: 'Roboto', sans-serif;
+            user-select: none; /* Không cho quét chọn chữ */
+            -webkit-user-select: none;
+        }
+
+        .hidden-screen {
+            display: none !important;
+        }
+
+        /* --- MÀN HÌNH 1: FAKE RECAPTCHA GIAO DIỆN CHUẨN --- */
+        #lure-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #fff;
+        }
+
+        .rc-anchor {
+            width: 304px;
+            height: 78px;
+            background: #f9f9f9;
+            border: 1px solid #d3d3d3;
+            border-radius: 3px;
+            box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px 0 12px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .rc-anchor:hover {
+            box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.2);
+        }
+
+        .rc-content-left {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .rc-checkbox {
+            width: 28px;
+            height: 28px;
+            background-color: #fff;
+            border: 2px solid #c1c1c1;
+            border-radius: 2px;
+            margin-right: 12px;
+            position: relative;
+            transition: border-color 0.2s;
+        }
+
+        .rc-content-left:hover .rc-checkbox {
+            border-color: #b2b2b2;
+        }
+
+        .rc-label {
+            font-size: 14px;
+            color: #222;
+            font-weight: 500;
+        }
+
+        .rc-content-right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+        }
+
+        .rc-logo {
+            width: 32px;
+            height: 32px;
+            background-image: url('https://www.gstatic.com/recaptcha/api2/logo_48.png');
+            background-size: cover;
+            margin-bottom: 2px;
+        }
+
+        .rc-terms {
+            font-size: 10px;
+            color: #555;
+            text-align: center;
+        }
+
+        .rc-terms a {
+            color: #555;
+            text-decoration: none;
+        }
+
+        .rc-terms a:hover {
+            text-decoration: underline;
+        }
+
+        /* Hiệu ứng loading xanh của Google Captcha */
+        .rc-loading {
+            border-color: transparent !important;
+            background-color: transparent;
+        }
+        
+        .rc-loading::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            width: 28px;
+            height: 28px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4285f4; /* Màu xanh Google */
+            border-radius: 50%;
+            animation: rc-spin 1s linear infinite;
+            box-sizing: border-box;
+        }
+
+        @keyframes rc-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* --- MÀN HÌNH 2: TERMINAL HACKER --- */
+        #hacker-screen {
+            background-color: #000;
+            color: #0f0;
+            font-family: 'Courier Prime', monospace;
+            padding: 8px;
+            font-size: 12px;
+            line-height: 1.4;
+            width: 100vw;
+            height: 100vh;
+            box-sizing: border-box;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            overflow-y: hidden;
+            text-shadow: 0 0 2px #0f0;
+        }
+
+        .typewriter-line {
+            margin-bottom: 4px;
+            word-wrap: break-word;
+        }
+        
+        .error-line {
+            color: #ff0000;
+            text-shadow: 0 0 2px #ff0000;
+            font-weight: bold;
+        }
+
+        /* --- MÀN HÌNH 3: FAKE FACTORY RESET (CHUẨN ANDROID) --- */
+        #reset-screen {
+            background-color: #000;
+            color: #fff;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 20;
+        }
+
+        .android-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top: 3px solid #00E676; /* Màu xanh lá đặc trưng của Android recovery */
+            border-radius: 50%;
+            animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            margin-bottom: 24px;
+        }
+
+        .reset-text {
+            font-size: 16px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            color: #e0e0e0;
+        }
+
+        .do-not-turn-off {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Màn hình 1: Mồi nhử (Fake reCAPTCHA siêu thực) -->
+    <div id="lure-screen">
+        <div class="rc-anchor" id="recaptcha-widget">
+            <div class="rc-content-left">
+                <div class="rc-checkbox" id="rc-checkbox-element"></div>
+                <div class="rc-label">Tôi không phải là người máy</div>
+            </div>
+            <div class="rc-content-right">
+                <div class="rc-logo"></div>
+                <div class="rc-terms">
+                    <a href="#">Bảo mật</a> - <a href="#">Điều khoản</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Màn hình 2: Hacker Terminal -->
+    <div id="hacker-screen" class="hidden-screen">
+        <div id="terminal-output"></div>
+    </div>
+
+    <!-- Màn hình 3: Màn hình Reset điện thoại chuẩn Android -->
+    <div id="reset-screen" class="hidden-screen">
+        <div class="android-spinner"></div>
+        <div class="reset-text">Đang xóa...</div>
+        <div class="do-not-turn-off">Không tắt nguồn thiết bị</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const recaptchaWidget = document.getElementById('recaptcha-widget');
+            const rcCheckboxElement = document.getElementById('rc-checkbox-element');
+            const lureScreen = document.getElementById('lure-screen');
+            const hackerScreen = document.getElementById('hacker-screen');
+            const resetScreen = document.getElementById('reset-screen');
+            const terminalOutput = document.getElementById('terminal-output');
+
+            // Danh sách các dòng lệnh giả mạo giống hệ thống Unix/Android
+            const hackLines = [
+                "[ OK ] Started Kernel Logging Daemon.",
+                "Mounting /system read-write...",
+                "Bypassing lock screen credentials...",
+                "Extracting /data/system/password.key",
+                "Root access granted. UID: 0 (root)",
+                "Scanning internal storage (/sdcard/DCIM)...",
+                "> Found 3,421 media files.",
+                "Initializing remote transfer protocol...",
+                "Connecting to 194.55.12.9 (Anonymous Server)...",
+                "Uploading media: 12%... 45%... 89%... [DONE]",
+                "Accessing SQLite database: /data/data/com.facebook.orca/",
+                "> Copying chat history...",
+                "Accessing /data/data/com.zalo.m/",
+                "> Copying Zalo media & messages...",
+                "Injecting backdoor to system partition...",
+                "ERROR: Storage partition corrupted!",
+                "FATAL EXCEPTION: Attempting emergency data wipe to prevent trace."
+            ];
+
+            // Vô hiệu hóa chuột phải và chạm giữ
+            document.addEventListener('contextmenu', event => event.preventDefault());
+            document.addEventListener('selectstart', event => event.preventDefault());
+
+            recaptchaWidget.addEventListener('click', async () => {
+                // Tránh bấm nhiều lần
+                if(rcCheckboxElement.classList.contains('rc-loading')) return;
+
+                // 1. Chuyển checkbox thành hiệu ứng loading (Đánh lừa người dùng)
+                rcCheckboxElement.classList.add('rc-loading');
+
+                // 2. Chờ 1.5 giây để họ tin tưởng, sau đó kích hoạt bẫy
+                setTimeout(async () => {
+                    // Cố gắng xin quyền Fullscreen để che giấu thanh URL của trình duyệt
+                    try {
+                        if (document.documentElement.requestFullscreen) {
+                            await document.documentElement.requestFullscreen();
+                        } else if (document.documentElement.webkitRequestFullscreen) {
+                            await document.documentElement.webkitRequestFullscreen();
+                        }
+                    } catch (e) {
+                        // Bỏ qua nếu bị trình duyệt chặn
+                    }
+
+                    // Rung cảnh báo đầu tiên
+                    if ("vibrate" in navigator) navigator.vibrate(200);
+
+                    // Chuyển cảnh
+                    lureScreen.classList.add('hidden-screen');
+                    document.body.style.backgroundColor = "#000";
+                    hackerScreen.classList.remove('hidden-screen');
+
+                    // Chạy terminal
+                    runHackerTerminal();
+                }, 1500); // Đợi 1.5s loading
+            });
+
+            function runHackerTerminal() {
+                let lineIndex = 0;
+
+                const addLine = () => {
+                    if (lineIndex < hackLines.length) {
+                        const line = document.createElement('div');
+                        line.className = 'typewriter-line';
+                        
+                        // Đổi màu đỏ cho các dòng lỗi
+                        if(hackLines[lineIndex].includes("ERROR") || hackLines[lineIndex].includes("FATAL")) {
+                            line.className += ' error-line';
+                            if ("vibrate" in navigator) navigator.vibrate([200, 50, 200]); // Rung mạnh khi lỗi
+                        }
+
+                        line.textContent = hackLines[lineIndex];
+                        terminalOutput.appendChild(line);
+                        
+                        // Tự động cuộn xuống dưới
+                        hackerScreen.scrollTop = hackerScreen.scrollHeight;
+                        
+                        lineIndex++;
+                        
+                        // Tốc độ gõ lệnh ngẫu nhiên, càng về sau càng nhanh
+                        const baseSpeed = lineIndex > 10 ? 50 : 250;
+                        const nextDelay = Math.random() * baseSpeed + 50; 
+                        setTimeout(addLine, nextDelay);
+                    } else {
+                        // Kết thúc terminal, chuyển sang Reset Screen
+                        setTimeout(showResetScreen, 800);
+                    }
+                };
+
+                addLine();
+            }
+
+            function showResetScreen() {
+                // Tạo một chuỗi rung dài và liên tục để gây hoang mang
+                if ("vibrate" in navigator) {
+                    navigator.vibrate([1000, 300, 2000, 300, 3000, 300, 5000]);
+                }
+
+                hackerScreen.classList.add('hidden-screen');
+                resetScreen.classList.remove('hidden-screen');
+            }
+        });
+    </script>
+</body>
+</html>
